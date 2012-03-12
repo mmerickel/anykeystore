@@ -64,6 +64,7 @@ class SQLStore(KeyValueStore):
                     return pickle.loads(data[0])
         finally:
             c.close()
+        raise KeyError
 
     def store(self, key, value, expires=None):
         expiration = None

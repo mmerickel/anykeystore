@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from anykeystore.compat import iteritems_
 from anykeystore.interfaces import KeyValueStore
 from anykeystore.utils import coerce_timedelta
 
@@ -14,6 +15,7 @@ class MemoryStore(KeyValueStore):
             value, expires = data
             if expires is None or datetime.utcnow() < expires:
                 return value
+        raise KeyError
 
     def store(self, key, value, expires=None):
         expiration = None
@@ -31,7 +33,7 @@ class MemoryStore(KeyValueStore):
 
         # Record the keys to delete, there may be a lot, so we use iteritems
         # which doesn't let us change it while iterating
-        for key, value in self._store.iteritems():
+        for key, value in iteritems_(self._store):
             if value[1] is not None and now > value[1]:
                 to_delete.append(key)
         for key in to_delete:
