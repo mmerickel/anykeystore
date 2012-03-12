@@ -1,8 +1,12 @@
+import sys
+
 from anykeystore.exceptions import ConfigurationError
 
 def _load_backend(name):
     try:
-        module = __import__('anykeystore.backends.%s' % name)
+        module_name = 'anykeystore.backends.%s' % name
+        __import__(module_name)
+        module = sys.modules[module_name]
         if hasattr(module, 'backend'):
             backend = module.backend
         else:
@@ -34,7 +38,7 @@ def create_store(name, **kwargs):
 
 def create_store_from_settings(settings, prefix='', **kwargs):
     plen = len(prefix)
-    for k, v in settings.iteritems():
+    for k, v in settings.items():
         if k.startswith(prefix):
             kwargs[k[plen:]] = v
     name = kwargs.pop('store')

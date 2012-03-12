@@ -17,12 +17,13 @@ setup(
     long_description=README + '\n\n' + CHANGES,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
+        'Development Status :: 3 - Alpha',
         "Intended Audience :: Developers",
-        'License :: OSI Approved :: MIT License',
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         'Topic :: Database',
+        'License :: OSI Approved :: MIT License',
     ],
     keywords='',
     author='Michael Merickel',
@@ -33,6 +34,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
+    test_suite="anykeystore.tests",
     entry_points="""\
     """,
 )
