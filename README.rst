@@ -14,8 +14,6 @@ Usage
     store = create_store(
         'sqla', url='postgres+psycopg2://bob@localhost/mydb')
 
-.. code-block:: python
-
     settings = {
         'mystore.store': 'sqla',
         'mystore.url': 'mysql://bob@localhost/mydb',
