@@ -12,7 +12,7 @@ requires = []
 
 setup(
     name='anykeystore',
-    version='0.1a1',
+    version='0.1a2',
     description="A key-value store supporting multiple backends.",
     long_description=README + '\n\n' + CHANGES,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
