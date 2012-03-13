@@ -13,7 +13,8 @@ class TestRedisStore(unittest.TestCase):
 
     def _makeOne(self):
         from anykeystore.backends.memcached import MemcachedStore
-        store = MemcachedStore(key_prefix='test_anykey.')
+        store = MemcachedStore(
+            servers='localhost:11211', key_prefix='test_anykey.')
         return store
 
     def test_it(self):

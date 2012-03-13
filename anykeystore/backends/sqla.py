@@ -48,8 +48,9 @@ class SQLStore(KeyValueStore):
             )
         kw['url'] = url
         self.engine = engine_from_config(kw, prefix='')
+        self._create_table() # TODO: ideally delay this until first access
 
-    def create(self):
+    def _create_table(self):
         self.table.create(checkfirst=True, bind=self.engine)
 
     def retrieve(self, key):

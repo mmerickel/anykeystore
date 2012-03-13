@@ -13,7 +13,6 @@ class TestSQLStore(unittest.TestCase):
     def _makeOne(self, url='sqlite://', **kw):
         from anykeystore.backends.sqla import SQLStore
         store = SQLStore(url, **kw)
-        store.create()
         return store
 
     def test_it(self):

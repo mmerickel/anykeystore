@@ -22,3 +22,8 @@ else:
         return d.itervalues()
     def iterkeys_(d):
         return d.iterkeys()
+
+if PY3: #pragma: no cover
+    basestring = str
+else:
+    basestring = basestring

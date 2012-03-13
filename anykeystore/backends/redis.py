@@ -21,7 +21,7 @@ class RedisStore(KeyValueStore):
                  key_prefix='anykeystore.'):
         self.host = host
         self.port = int(port)
-        self.db = db
+        self.db = int(db)
         self.key_prefix = key_prefix or ''
         self.pool = redis.ConnectionPool(host=host, port=port, db=db)
 

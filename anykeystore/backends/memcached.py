@@ -6,8 +6,9 @@ except ImportError: # pragma: no cover
     # fall back for Google App Engine -- hasnt been tested though
     from google.appengine.api import memcache
 
+from anykeystore.compat import basestring
 from anykeystore.interfaces import KeyValueStore
-from anykeystore.utils import coerce_timedelta
+from anykeystore.utils import coerce_timedelta, splitlines
 
 
 log = logging.getLogger(__name__)
@@ -16,6 +17,8 @@ class MemcachedStore(KeyValueStore):
     def __init__(self,
                  servers=('localhost:11211',),
                  key_prefix='anykeystore.'):
+        if isinstance(servers, basestring):
+            servers = splitlines(servers)
         self.servers = servers
         self.key_prefix = key_prefix
 
