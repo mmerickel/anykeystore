@@ -2,10 +2,9 @@ from datetime import datetime
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import Column, MetaData
-from sqlalchemy import String, Text, DateTime, Table
+from sqlalchemy import String, PickleType, DateTime, Table
 from sqlalchemy.sql import select, delete
 
-from anykeystore.compat import pickle
 from anykeystore.interfaces import KeyValueStore
 from anykeystore.utils import coerce_timedelta
 
@@ -43,8 +42,8 @@ class SQLStore(KeyValueStore):
             table_name = kw.pop('table_name', 'key_storage')
             meta = kw.pop('metadata', MetaData())
             self.table = Table(table_name, meta,
-                Column('key', String(200), primary_key=True, nullable=False),
-                Column('value', Text(), nullable=False),
+                Column('key', String(256), primary_key=True, nullable=False),
+                Column('value', PickleType(), nullable=False),
                 Column('expires', DateTime()),
             )
         kw['url'] = url
@@ -54,14 +53,15 @@ class SQLStore(KeyValueStore):
         self.table.create(checkfirst=True, bind=self.engine)
 
     def retrieve(self, key):
-        s = self.table
         c = self.engine.connect()
         try:
-            data = c.execute(select([s.c.value, s.c.expires], s.c.key == key))
+            data = c.execute(select(
+                [self.table.c.value, self.table.c.expires],
+                self.table.c.key == key)).fetchone()
             if data:
                 value, expires = data
                 if expires is None or datetime.utcnow() < expires:
-                    return pickle.loads(data[0])
+                    return value
         finally:
             c.close()
         raise KeyError
@@ -70,7 +70,6 @@ class SQLStore(KeyValueStore):
         expiration = None
         if expires:
             expiration = datetime.utcnow() + coerce_timedelta(expires)
-            value = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
         c = self.engine.connect()
         try:
             c.execute(
