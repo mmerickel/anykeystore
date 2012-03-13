@@ -20,7 +20,7 @@ class RedisStore(KeyValueStore):
     def __init__(self, db=0, host='localhost', port=6379,
                  key_prefix='anykeystore.'):
         self.host = host
-        self.port = port
+        self.port = int(port)
         self.db = db
         self.key_prefix = key_prefix or ''
         self.pool = redis.ConnectionPool(host=host, port=port, db=db)
