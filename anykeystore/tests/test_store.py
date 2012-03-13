@@ -23,3 +23,8 @@ class TestStore(unittest.TestCase):
 
         from anykeystore.backends.memory import MemoryStore
         self.assertTrue(isinstance(store, MemoryStore))
+
+    def test_create_nonexistent_store(self):
+        from anykeystore import create_store
+        from anykeystore.exceptions import ConfigurationError
+        self.assertRaises(ConfigurationError, create_store, '_dumbdb')

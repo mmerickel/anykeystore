@@ -17,7 +17,7 @@ def _load_backend(name):
         return backend
     except ImportError:
         module = _load_entry_point(name)
-        if module is None:
+        if module is not None:
             return module
         raise ConfigurationError(
             'Could not determine backend for "%s"' % name)

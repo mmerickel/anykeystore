@@ -6,7 +6,7 @@ class KeyValueStore(object):
 
         :param key: The key to retrieve. Keys are always ascii-safe strings.
         """
-        raise NotImplementedError
+        raise NotImplementedError # pragma: no cover
 
     def store(self, key, value, expires=None):
         """ This method stores value in the storage.
@@ -22,14 +22,14 @@ class KeyValueStore(object):
                         :meth:`datetime.timedelta` object before the stored
                         data should be removed.
         """
-        raise NotImplementedError
+        raise NotImplementedError # pragma: no cover
 
     def delete(self, key):
         """ This method deletes data from the storage.
 
         :param key: The key of the data to be removed.
         """
-        raise NotImplementedError
+        raise NotImplementedError # pragma: no cover
 
     def purge_expired(self):
         """ This method purges all expired data from the storage.
@@ -38,4 +38,4 @@ class KeyValueStore(object):
         is called. Backends that automatically expire old data must still
         implement this method, but can do nothing.
         """
-        raise NotImplementedError
+        raise NotImplementedError # pragma: no cover
