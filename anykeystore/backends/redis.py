@@ -8,7 +8,15 @@ from anykeystore.utils import coerce_timedelta
 
 
 class RedisStore(KeyValueStore):
-    """Redis Storage for Auth Provider"""
+    """ Simple storage via Redis.
+
+    :param db: The name of the redis database.
+    :param host: Redis server host.
+    :param port: Redis server port.
+    :param key_prefix: Key prefix to avoid colliding with other parts of
+                       the redis key/value store.
+    """
+
     def __init__(self, db=0, host='localhost', port=6379,
                  key_prefix='anykeystore.'):
         self.host = host

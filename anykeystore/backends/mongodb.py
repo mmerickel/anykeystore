@@ -9,7 +9,7 @@ from anykeystore.utils import coerce_timedelta
 
 
 class MongoDBStore(KeyValueStore):
-    """ Simple storage via SQLAlchemy.
+    """ Simple storage via MongoDB.
 
     :param db: The name of the mongo database.
     :param collection: Optional (default="key_storage").
