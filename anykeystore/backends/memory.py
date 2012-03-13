@@ -38,6 +38,5 @@ class MemoryStore(KeyValueStore):
                 to_delete.append(key)
         for key in to_delete:
             del self._store[key]
-        return True
 
 backend = MemoryStore
