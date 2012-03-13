@@ -1,6 +1,17 @@
 from setuptools import setup, find_packages
 import sys, os
 
+py_version = sys.version_info[:2]
+
+PY3 = py_version[0] == 3
+
+if PY3:
+    if py_version < (3, 2):
+        raise RuntimeError('On Python 3, Pyramid requires Python 3.2 or better')
+else:
+    if py_version < (2, 6):
+        raise RuntimeError('On Python 2, Pyramid requires Python 2.6 or better')
+
 here = os.path.abspath(os.path.dirname(__file__))
 try:
     README = open(os.path.join(here, 'README.rst')).read()
@@ -9,6 +20,13 @@ except IOError:
     README = CHANGES = ''
 
 requires = []
+
+tests_require = requires + []
+
+if PY3:
+    tests_require.append('unittest2py3k')
+else:
+    tests_require.append('unittest2')
 
 setup(
     name='anykeystore',
@@ -34,6 +52,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
+    tests_require=tests_require,
     test_suite="anykeystore.tests",
     entry_points="""\
     """,
