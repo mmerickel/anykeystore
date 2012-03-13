@@ -28,6 +28,16 @@ Supported Backends
 
 - sqlalchemy
 
+  requires: sqlalchemy
+
 - mongodb
 
+  requires: pymongo
+
 - redis
+
+  requires: redis-py
+
+- memcached
+
+  requires: python-memcached, or python3-memcached
