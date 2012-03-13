@@ -23,14 +23,17 @@ class RedisStore(KeyValueStore):
         self.port = int(port)
         self.db = int(db)
         self.key_prefix = key_prefix or ''
-        self.pool = redis.ConnectionPool(host=host, port=port, db=db)
 
     def _make_key(self, key):
         return '%s%s' % (self.key_prefix, key)
 
+    _pool = None
     def _get_conn(self):
         """The Redis connection, cached for this call"""
-        return redis.Redis(connection_pool=self.pool)
+        if self._pool is None:
+            self._pool = redis.ConnectionPool(
+                host=self.host, port=self.port, db=self.db)
+        return redis.Redis(connection_pool=self._pool)
 
     def retrieve(self, key):
         data = self._get_conn().get(self._make_key(key))
