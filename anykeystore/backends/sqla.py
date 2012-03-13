@@ -48,13 +48,19 @@ class SQLStore(KeyValueStore):
             )
         kw['url'] = url
         self.engine = engine_from_config(kw, prefix='')
-        self._create_table() # TODO: ideally delay this until first access
 
     def _create_table(self):
         self.table.create(checkfirst=True, bind=self.engine)
+        self._created = True
+
+    _created = False
+    def _get_conn(self):
+        if not self._created:
+            self._create_table()
+        return self.engine.connect()
 
     def retrieve(self, key):
-        c = self.engine.connect()
+        c = self._get_conn()
         try:
             data = c.execute(select(
                 [self.table.c.value, self.table.c.expires],
@@ -71,7 +77,7 @@ class SQLStore(KeyValueStore):
         expiration = None
         if expires is not None:
             expiration = datetime.utcnow() + coerce_timedelta(expires)
-        c = self.engine.connect()
+        c = self._get_conn()
         try:
             c.execute(
                 self.table.insert(), key=key, value=value, expires=expiration)
@@ -79,14 +85,14 @@ class SQLStore(KeyValueStore):
             c.close()
 
     def delete(self, key):
-        c = self.engine.connect()
+        c = self._get_conn()
         try:
             c.execute(delete(self.table, self.table.c.key == key))
         finally:
             c.close()
 
     def purge_expired(self):
-        c = self.engine.connect()
+        c = self._get_conn()
         try:
             c.execute(
                 delete(self.table, self.table.c.expires < datetime.utcnow()))
