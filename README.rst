@@ -20,3 +20,14 @@ Usage
         'mystore.url': 'mysql://bob@localhost/mydb',
     }
     store = create_store_from_settings(settings, prefix='mystore.')
+
+Supported Backends
+==================
+
+- memory
+
+- sqlalchemy
+
+- mongodb
+
+- redis
