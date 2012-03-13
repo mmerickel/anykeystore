@@ -2,6 +2,12 @@ import time
 
 import unittest2 as unittest
 
+def setUpModule():
+    try: # pragma: no cover
+        import sqlalchemy
+    except ImportError: # pragma: no cover
+        raise unittest.SkipTest('must install sqlalchemy to run sqla tests')
+
 class TestSQLStore(unittest.TestCase):
 
     def _makeOne(self, url='sqlite://', **kw):

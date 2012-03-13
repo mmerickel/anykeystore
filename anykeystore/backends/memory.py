@@ -19,7 +19,7 @@ class MemoryStore(KeyValueStore):
 
     def store(self, key, value, expires=None):
         expiration = None
-        if expires:
+        if expires is not None:
             expiration = datetime.utcnow() + coerce_timedelta(expires)
         self._store[key] = (value, expiration)
 

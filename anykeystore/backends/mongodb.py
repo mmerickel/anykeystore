@@ -20,7 +20,7 @@ class MongoDBStore(KeyValueStore):
 
     def __init__(self,
                  db,
-                 collection='key_storage',
+                 collection='anykeystore',
                  host='localhost',
                  port=27017):
         self.host = host
@@ -48,7 +48,7 @@ class MongoDBStore(KeyValueStore):
 
     def store(self, key, value, expires=None):
         expiration = None
-        if expires:
+        if expires is not None:
             expiration = datetime.utcnow() + coerce_timedelta(expires)
         c = self._get_conn()
         c[self.collection].update(
