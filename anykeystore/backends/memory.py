@@ -6,8 +6,13 @@ from anykeystore.utils import coerce_timedelta
 
 class MemoryStore(KeyValueStore):
     """ In-memory storage. Not persistent."""
-    def __init__(self):
-        self._store = {}
+    def __init__(self, backend_api=dict):
+        self.backend_api = backend_api
+        self._store = self.backend_api()
+
+    @classmethod
+    def backend_api(cls):
+        return dict
 
     def retrieve(self, key):
         data = self._store.get(key)

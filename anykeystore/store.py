@@ -34,6 +34,8 @@ def _load_entry_point(name):
 
 def create_store(name, **kwargs):
     backend_cls = _load_backend(name)
+    backend_api = backend_cls.backend_api
+    kwargs.setdefault('backend_api', backend_api)
     return backend_cls(**kwargs)
 
 def create_store_from_settings(settings, prefix='', **kwargs):

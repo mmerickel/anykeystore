@@ -1,8 +1,5 @@
 from datetime import datetime
 
-from pymongo import Connection
-from pymongo.binary import Binary
-
 from anykeystore.compat import pickle
 from anykeystore.interfaces import KeyValueStore
 from anykeystore.utils import coerce_timedelta
@@ -11,8 +8,8 @@ from anykeystore.utils import coerce_timedelta
 class MongoDBStore(KeyValueStore):
     """ Simple storage via MongoDB.
 
-    :param db: The name of the mongo database.
-    :param collection: Optional (default="key_storage").
+    :param db: The name of the database.
+    :param collection: Optional (default="anykeystore").
                        The document collection within the database.
     :param host: MongoDB server host.
     :param port: MongoDB server port.
@@ -22,18 +19,23 @@ class MongoDBStore(KeyValueStore):
                  db,
                  collection='anykeystore',
                  host='localhost',
-                 port=27017):
+                 port=27017,
+                 backend_api=None):
         self.host = host
         self.port = int(port)
         self.db = db
         self.collection = collection
+        self.backend_api = backend_api
+
+    @classmethod
+    def backend_api(cls):
+        return __import__('pymongo')
 
     def _get_conn(self):
-        db_conn = Connection(self.host, self.port, slave_okay=False)
+        db_conn = self.backend_api.Connection(
+            self.host, self.port, slave_okay=False)
         conn = db_conn[self.db]
-        #Set arbitrary limit on how large user_store session can grow to
-        #http://www.mongodb.org/display/DOCS/Capped+Collections
-        if not self.collection in conn.collection_names(): # pragma: no cover
+        if not self.collection in conn.collection_names():
             conn.create_collection(self.collection)
         return conn
 
@@ -51,11 +53,12 @@ class MongoDBStore(KeyValueStore):
         if expires is not None:
             expiration = datetime.utcnow() + coerce_timedelta(expires)
         c = self._get_conn()
+        api = self.backend_api
         c[self.collection].update(
             {'key': key},
             {
                 '$set': {
-                    'value': Binary(pickle.dumps(value)),
+                    'value': api.binary.Binary(pickle.dumps(value)),
                     'expires': expiration,
                 },
             },

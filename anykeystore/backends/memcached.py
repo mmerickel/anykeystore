@@ -1,11 +1,5 @@
 import logging
 
-try:
-    import memcache
-except ImportError: # pragma: no cover
-    # fall back for Google App Engine -- hasnt been tested though
-    from google.appengine.api import memcache
-
 from anykeystore.compat import basestring
 from anykeystore.interfaces import KeyValueStore
 from anykeystore.utils import coerce_timedelta, splitlines
@@ -16,15 +10,26 @@ log = logging.getLogger(__name__)
 class MemcachedStore(KeyValueStore):
     def __init__(self,
                  servers=('localhost:11211',),
-                 key_prefix='anykeystore.'):
+                 key_prefix='anykeystore.',
+                 backend_api=None):
         if isinstance(servers, basestring):
             servers = splitlines(servers)
         self.servers = servers
         self.key_prefix = key_prefix
+        self.backend_api = backend_api
+
+    @classmethod
+    def backend_api(cls):
+        try:
+            import memcache
+        except ImportError: # pragma: no cover
+            # fall back for Google App Engine -- hasnt been tested though
+            from google.appengine.api import memcache
+        return memcache
 
     def _get_conn(self):
         """The Memcached connection, cached for this call"""
-        return memcache.Client(self.servers)
+        return self.backend_api.Client(self.servers)
 
     def _make_key(self, key):
         return '%s%s' % (self.key_prefix, key)

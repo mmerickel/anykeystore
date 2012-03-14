@@ -1,10 +1,5 @@
 from datetime import datetime
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import Column, MetaData
-from sqlalchemy import String, PickleType, DateTime, Table
-from sqlalchemy.sql import select, delete
-
 from anykeystore.interfaces import KeyValueStore
 from anykeystore.utils import coerce_timedelta
 
@@ -34,20 +29,27 @@ class SQLStore(KeyValueStore):
     :param metadata: Optional. The SQLAlchemy MetaData instance to hook the
                  generated table into.
     :type metadata: sqlalchemy.MetaData
+    :param backend_api: Should be SQLAlchemy.
     """
     def __init__(self, url, **kw):
         self.url = url
         self.table = kw.pop('table', None)
+        self.backend_api = api = kw.pop('backend_api')
         if not self.table:
             table_name = kw.pop('table_name', 'key_storage')
-            meta = kw.pop('metadata', MetaData())
-            self.table = Table(table_name, meta,
-                Column('key', String(256), primary_key=True, nullable=False),
-                Column('value', PickleType(), nullable=False),
-                Column('expires', DateTime()),
+            meta = kw.pop('metadata', api.MetaData())
+            self.table = api.Table(table_name, meta,
+                api.Column(
+                    'key', api.String(256), primary_key=True, nullable=False),
+                api.Column('value', api.PickleType(), nullable=False),
+                api.Column('expires', api.DateTime()),
             )
         kw['url'] = url
-        self.engine = engine_from_config(kw, prefix='')
+        self.engine = api.engine_from_config(kw, prefix='')
+
+    @classmethod
+    def backend_api(cls):
+        return __import__('sqlalchemy')
 
     def _create_table(self):
         self.table.create(checkfirst=True, bind=self.engine)
@@ -61,8 +63,9 @@ class SQLStore(KeyValueStore):
 
     def retrieve(self, key):
         c = self._get_conn()
+        api = self.backend_api
         try:
-            data = c.execute(select(
+            data = c.execute(api.select(
                 [self.table.c.value, self.table.c.expires],
                 self.table.c.key == key)).fetchone()
             if data:
@@ -86,8 +89,9 @@ class SQLStore(KeyValueStore):
 
     def delete(self, key):
         c = self._get_conn()
+        api = self.backend_api
         try:
-            c.execute(delete(self.table, self.table.c.key == key))
+            c.execute(api.delete(self.table, self.table.c.key == key))
         finally:
             c.close()
 
