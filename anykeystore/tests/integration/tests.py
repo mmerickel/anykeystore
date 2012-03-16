@@ -2,14 +2,14 @@ import os
 import time
 import unittest
 
+from nose.plugins.skip import SkipTest
+
 
 config = {}
 
-here = os.path.dirname(__file__)
-
 def setUpModule():
     from anykeystore.compat import configparser
-    inipath = os.environ.get('TEST_INI', os.path.join(here, 'testing.ini'))
+    inipath = os.environ.get('TEST_INI', 'testing.ini')
     if os.path.isfile(inipath):
         parser = configparser.ConfigParser()
         parser.read(inipath)
@@ -17,7 +17,7 @@ def setUpModule():
         config.update(parser.items('testconfig'))
 
     else:
-        raise unittest.SkipTest(
+        raise SkipTest(
             'could not find testing.ini required to run integration tests')
 
 class BackendTests(object):
@@ -29,7 +29,7 @@ class BackendTests(object):
         try:
             store = create_store_from_settings(config, prefix=self.key + '.')
         except ImportError as e:
-            raise unittest.SkipTest(str(e))
+            raise SkipTest(str(e))
         return store
 
     def test_it(self):

@@ -1,0 +1,14 @@
+0.2 (2012-03-15)
+================
+
+Added test coverage and support for 4 backends:
+
+- Memcached
+- MongoDB
+- Redis
+- SQLAlchemy
+
+0.1 (2012-03-13)
+================
+
+Initial commit with support for the in-memory backend.

@@ -21,11 +21,6 @@ except IOError:
 
 requires = []
 
-tests_require = requires + [
-    'mock',
-    'nose',
-]
-
 setup(
     name='anykeystore',
     version='0.2',
@@ -51,7 +46,25 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
-    tests_require=tests_require,
+    extras_require={
+        'testing': [
+            'nose',
+            'mock',
+            'nose-testconfig',
+        ],
+        'sqla': [
+            'sqlalchemy',
+        ],
+        'mongodb': [
+            'pymongo',
+        ],
+        'redis': [
+            'redis',
+        ],
+        'memcached': [
+            'python3-memcache' if PY3 else 'python-memcache',
+        ],
+    },
     entry_points="""\
     """,
 )
