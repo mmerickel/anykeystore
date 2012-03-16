@@ -44,7 +44,9 @@ class SQLStore(KeyValueStore):
 
     @classmethod
     def backend_api(cls):
-        return __import__('sqlalchemy')
+        import sqlalchemy
+        import sqlalchemy.exc
+        return sqlalchemy
 
     def _make_table(self, name, meta):
         api = self.backend_api
@@ -109,9 +111,11 @@ class SQLStore(KeyValueStore):
 
     def purge_expired(self):
         c = self._get_conn()
+        api = self.backend_api
         try:
             c.execute(
-                delete(self.table, self.table.c.expires < datetime.utcnow()))
+                api.delete(
+                    self.table, self.table.c.expires < datetime.utcnow()))
         finally:
             c.close()
 

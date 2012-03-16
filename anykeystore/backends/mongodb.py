@@ -29,7 +29,9 @@ class MongoDBStore(KeyValueStore):
 
     @classmethod
     def backend_api(cls):
-        return __import__('pymongo')
+        import pymongo
+        import pymongo.binary
+        return pymongo
 
     def _get_conn(self):
         db_conn = self.backend_api.Connection(
