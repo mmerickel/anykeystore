@@ -1,15 +1,17 @@
 import os
 import time
-import unittest2 as unittest
-from ConfigParser import ConfigParser
+import unittest
 
 
 config = {}
 
+here = os.path.dirname(__file__)
+
 def setUpModule():
-    inipath = os.environ.get('TEST_INI', 'testing.ini')
+    from anykeystore.compat import configparser
+    inipath = os.environ.get('TEST_INI', os.path.join(here, 'testing.ini'))
     if os.path.isfile(inipath):
-        parser = ConfigParser()
+        parser = configparser.ConfigParser()
         parser.read(inipath)
 
         config.update(parser.items('testconfig'))

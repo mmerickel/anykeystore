@@ -1,6 +1,6 @@
+import unittest
 from datetime import datetime, timedelta
 
-import unittest2 as unittest
 from mock import MagicMock, patch
 
 class TestMongoStore(unittest.TestCase):

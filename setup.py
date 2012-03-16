@@ -23,12 +23,8 @@ requires = []
 
 tests_require = requires + [
     'mock',
+    'nose',
 ]
-
-if PY3:
-    tests_require.append('unittest2py3k')
-else:
-    tests_require.append('unittest2')
 
 setup(
     name='anykeystore',
@@ -56,7 +52,6 @@ setup(
     zip_safe=False,
     install_requires=requires,
     tests_require=tests_require,
-    test_suite='unittest2.collector',
     entry_points="""\
     """,
 )
