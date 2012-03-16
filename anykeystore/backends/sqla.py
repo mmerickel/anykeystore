@@ -38,18 +38,23 @@ class SQLStore(KeyValueStore):
         if not self.table:
             table_name = kw.pop('table_name', 'key_storage')
             meta = kw.pop('metadata', api.MetaData())
-            self.table = api.Table(table_name, meta,
-                api.Column(
-                    'key', api.String(256), primary_key=True, nullable=False),
-                api.Column('value', api.PickleType(), nullable=False),
-                api.Column('expires', api.DateTime()),
-            )
+            self.table = self._make_table(table_name, meta)
         kw['url'] = url
         self.engine = api.engine_from_config(kw, prefix='')
 
     @classmethod
     def backend_api(cls):
         return __import__('sqlalchemy')
+
+    def _make_table(self, name, meta):
+        api = self.backend_api
+        table = api.Table(name, meta,
+            api.Column(
+                'key', api.String(256), primary_key=True, nullable=False),
+            api.Column('value', api.PickleType(), nullable=False),
+            api.Column('expires', api.DateTime()),
+        )
+        return table
 
     def _create_table(self):
         self.table.create(checkfirst=True, bind=self.engine)
