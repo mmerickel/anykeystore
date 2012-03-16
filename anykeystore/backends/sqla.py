@@ -81,14 +81,21 @@ class SQLStore(KeyValueStore):
             c.close()
         raise KeyError
 
+    def _insert_or_replace(self, c, key, value, expires):
+        try:
+            c.execute(
+                self.table.insert(), key=key, value=value, expires=expires)
+        except self.backend_api.exc.IntegrityError:
+            c.execute(
+                self.table.update(), key=key, value=value, expires=expires)
+
     def store(self, key, value, expires=None):
         expiration = None
         if expires is not None:
             expiration = datetime.utcnow() + coerce_timedelta(expires)
         c = self._get_conn()
         try:
-            c.execute(
-                self.table.insert(), key=key, value=value, expires=expiration)
+            self._insert_or_replace(c, key, value, expiration)
         finally:
             c.close()
 
