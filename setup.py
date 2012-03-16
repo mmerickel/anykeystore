@@ -56,7 +56,7 @@ setup(
     zip_safe=False,
     install_requires=requires,
     tests_require=tests_require,
-    test_suite="anykeystore.tests",
+    test_suite='unittest2.collector',
     entry_points="""\
     """,
 )
