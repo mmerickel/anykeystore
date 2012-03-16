@@ -1,12 +1,4 @@
-import time
-
 import unittest2 as unittest
-
-def setUpModule():
-    try: # pragma: no cover
-        import sqlalchemy
-    except ImportError: # pragma: no cover
-        raise unittest.SkipTest('must install sqlalchemy to run sqla tests')
 
 class TestSQLStore(unittest.TestCase):
 
@@ -35,6 +27,5 @@ class TestSQLStore(unittest.TestCase):
     def test_it_purge(self):
         store = self._makeOne()
         store.store('foo', 'bar', expires=0.01)
-        time.sleep(0.05)
         store.purge_expired()
         self.assertRaises(KeyError, store.retrieve, 'foo')

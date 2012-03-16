@@ -21,7 +21,9 @@ except IOError:
 
 requires = []
 
-tests_require = requires + []
+tests_require = requires + [
+    'mock',
+]
 
 if PY3:
     tests_require.append('unittest2py3k')
