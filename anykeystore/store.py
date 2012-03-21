@@ -1,3 +1,8 @@
+try:
+    import pkg_resources
+except ImportError: # pragma: no cover
+    pkg_resources = None
+
 import sys
 
 from anykeystore.exceptions import ConfigurationError
@@ -23,9 +28,7 @@ def _load_backend(name):
             'Could not determine backend for "%s"' % name)
 
 def _load_entry_point(name):
-    try:
-        import pkg_resources
-    except ImportError:
+    if pkg_resources is None:
         return None
 
     for res in pkg_resources.iter_entry_points('anykeystore.backends'):
