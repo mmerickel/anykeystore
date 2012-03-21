@@ -23,17 +23,19 @@ requires = []
 
 setup(
     name='anykeystore',
-    version='0.2',
+    version='0.3',
     description="A key-value store supporting multiple backends.",
     long_description=README + '\n\n' + CHANGES,
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 3 - Beta',
         "Intended Audience :: Developers",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
         'Topic :: Database',
         'License :: OSI Approved :: MIT License',
     ],
@@ -41,7 +43,6 @@ setup(
     author='Michael Merickel',
     author_email='oss@m.merickel.org',
     url='',
-    license='MIT',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
