@@ -51,6 +51,11 @@ class BackendTests(object):
         store.delete('foo')
         self.assertRaises(KeyError, store.retrieve, 'foo')
 
+    def test_delete_nonexistent_value(self):
+        store = self._makeOne()
+        store.delete('bar')
+        store.delete('bar')
+
     def test_retrieve_expired(self):
         store = self._makeOne()
         store.store('foo', 'bar', expires=self.expires)
