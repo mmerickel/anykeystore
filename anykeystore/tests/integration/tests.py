@@ -16,7 +16,7 @@ def setUpModule():
 
         config.update(parser.items('testconfig'))
 
-    else:
+    else: # pragma: no cover
         raise SkipTest(
             'could not find testing.ini required to run integration tests')
 
@@ -28,7 +28,7 @@ class BackendTests(object):
         from anykeystore import create_store_from_settings
         try:
             store = create_store_from_settings(config, prefix=self.key + '.')
-        except ImportError as e:
+        except ImportError as e: # pragma: no cover
             raise SkipTest(str(e))
         return store
 
@@ -37,6 +37,13 @@ class BackendTests(object):
         store.store('foo', 'bar')
         value = store.retrieve('foo')
         self.assertEqual(value, 'bar')
+
+    def test_it_duplicate(self):
+        store = self._makeOne()
+        store.store('foo', 'bar')
+        store.store('foo', 'baz')
+        value = store.retrieve('foo')
+        self.assertEqual(value, 'baz')
 
     def test_delete(self):
         store = self._makeOne()
@@ -75,6 +82,3 @@ class TestRedis(unittest.TestCase, BackendTests):
     key = 'redis'
     expires = 1
     wait = 2
-
-if __name__ == '__main__':
-    unittest.main()
