@@ -1,0 +1,14 @@
+anykeystore TODO
+================
+
+Nice-to-Have
+------------
+
+- Update the API to support locking.
+
+- Provide a dogpile.cache adapter to allow anykeystore backends.
+
+- Add a file backend. (shelve?)
+
+- Fix testing API. Unit tests should always work via "setup.py test",
+  whereas integration tests can only be run via nose with nose-testconfig.
