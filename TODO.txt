@@ -12,3 +12,5 @@ Nice-to-Have
 
 - Fix testing API. Unit tests should always work via "setup.py test",
   whereas integration tests can only be run via nose with nose-testconfig.
+
+- Write docs and render them on RTD.
